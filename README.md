@@ -86,6 +86,32 @@ You will engineer a single converged hyper-query that fuses vector similarity, O
 | **The Oracle DBA Console** |  |  |  |
 | <ul><li>Oracle_DBA_Console.ipynb</li></ul> | <a href="https://colab.research.google.com/github/Denis2054/RAG-Driven-Generative-AI-2nd-Edition/blob/main/commons/Oracle_DBA_Console.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a> | <a href="https://www.kaggle.com/kernels/welcome?src=https://github.com/Denis2054/RAG-Driven-Generative-AI-2nd-Edition/blob/main/commons/Oracle_DBA_Console.ipynb"><img src="https://kaggle.com/static/images/open-in-kaggle.svg" alt="Open In Kaggle"></a> | <a href="https://studiolab.sagemaker.aws/import/github/Denis2054/RAG-Driven-Generative-AI-2nd-Edition/blob/main/commons/Oracle_DBA_Console.ipynb"><img src="https://studiolab.sagemaker.aws/studiolab.svg" alt="Open In Studio Lab"></a> |
 The Oracle DBA Console serves as the Control Center for the Oracle Database 23ai (Oracle AI Database 26ai) Hybrid Vector Database of the entire GitHub repository.
+
+## Embeddings: data-sovereign ONNX in Oracle 26ai
+
+This repository demonstrates **data-sovereign embeddings** by running
+`sentence-transformers/all-MiniLM-L6-v2` directly inside an Oracle 26ai Free
+Tier database as an ONNX model. The embedding layer therefore does **not**
+require OpenAI API calls, while LLM generation still uses OpenAI (`gpt-*`).
+
+Key points:
+
+- **Model:** `sentence-transformers/all-MiniLM-L6-v2` (384-dim, `FLOAT32`).
+- **Storage:** imported into Oracle with `DBMS_DATA_MINING.IMPORT_ONNX_MODEL`.
+- **Invocation:** a PL/SQL helper `GET_EMBEDDING(p_text)` returns
+  `VECTOR(384, FLOAT32)`.
+- **Python access:** `commons/onnx_embedding_utils.py` provides
+  `get_embedding(cursor, text)` and `get_embeddings_batch(cursor, texts)`.
+- **Setup guide:** see `commons/onnx_embedding_setup.md` for export, import,
+  PL/SQL wrapper, and `oracledb` usage details.
+- **Schema:** all vector columns use `VECTOR(384, FLOAT32)` instead of
+  `VECTOR(1536)`.
+
+Notebooks that ingest or query vector data (`Chapter02/2_...`,
+`Chapter02/3_...`, `Chapter03/2_...`, `Chapter03/3_...`, `Chapter09/...`,
+`Chapter10/...`, `Chapter11/...`) import the helper and call the in-database
+model. Notebooks that only use OpenAI for LLM generation (`Chapter01`,
+`Chapter04`, `Chapter07`, `Chapter08`, `Chapter12`) remain unchanged.
 [![](https://github.com/Denis2054/RAG-Driven-Generative-AI-2nd-Edition/raw/main/commons/architecture_dba.png)](https://github.com/Denis2054/RAG-Driven-Generative-AI-2nd-Edition/raw/main/commons/architecture_dba.png)
 
 ## Requirements for this book
@@ -106,7 +132,7 @@ To get the most out of this book, ensure you have the following background and s
 
 * Access to a **Google Colab** environment
 * An **Oracle Cloud Free Tier** account to provision an **Autonomous Database 23ai** instance provisioned through the Oracle AI Database 26ai console.
-* An **OpenAI API key** for powering reasoning engines and fine-tuning pipelines
+* An **OpenAI API key** for powering LLM reasoning engines and fine-tuning pipelines (embeddings are generated in-database via ONNX, so no OpenAI embedding calls are required)
 
 ### Hardware Requirements
 
