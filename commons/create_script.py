@@ -14,7 +14,7 @@ DDL_CATALOG = {
                 id VARCHAR2(200) PRIMARY KEY,
                 description CLOB,
                 blueprint_json CLOB,
-                embedding VECTOR(1536)
+                embedding VECTOR(384, FLOAT32)
             )
             """
         },
@@ -26,7 +26,7 @@ DDL_CATALOG = {
                 id VARCHAR2(200) PRIMARY KEY,
                 source VARCHAR2(200),
                 text CLOB,
-                embedding VECTOR(1536)
+                embedding VECTOR(384, FLOAT32)
             )
             """
         }
@@ -43,7 +43,7 @@ DDL_CATALOG = {
                 skills VARCHAR2(1000),
                 years_experience NUMBER,
                 salary_expectation NUMBER,
-                resume_vector VECTOR(1536)
+                resume_vector VECTOR(384, FLOAT32)
             )
             """
         },
@@ -55,7 +55,7 @@ DDL_CATALOG = {
                 rule_id VARCHAR2(50) PRIMARY KEY,
                 agent_persona CLOB,
                 evaluation_criteria CLOB,
-                rule_vector VECTOR(1536)
+                rule_vector VECTOR(384, FLOAT32)
             )
             """
         }
@@ -82,7 +82,7 @@ DDL_CATALOG = {
                 asset_id NUMBER,
                 timestamp_start VARCHAR2(20),
                 description CLOB,
-                description_vector VECTOR(1536, FLOAT32), -- Minimal Fix: Pin to FLOAT32
+                description_vector VECTOR(384, FLOAT32), -- all-MiniLM-L6-v2 ONNX in-database embedding
                 FOREIGN KEY (asset_id) REFERENCES MEDIA_ASSETS(asset_id)
             )
             """
@@ -100,7 +100,7 @@ DDL_CATALOG = {
                 skills VARCHAR2(1000),
                 years_experience NUMBER,
                 salary_expectation NUMBER,
-                resume_vector VECTOR(1536, FLOAT32),
+                resume_vector VECTOR(384, FLOAT32),
                 home_location SDO_GEOMETRY
             )
             """
